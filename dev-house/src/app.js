@@ -11,7 +11,7 @@ class App {
         this.server = express();
 
         // MongoDB connection
-        mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devhouse.84ucmpy.mongodb.net/?retryWrites=true&w=majority`, {
+        mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@devhouse.84ucmpy.mongodb.net/devhouse?retryWrites=true&w=majority`, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });

@@ -8,8 +8,20 @@ update: atualizar sessão
 destroy: deletar sessão
 */
 
+import User from "../models/User"
+
 export default new class SessionControler {
-    store(request, response) {
-        return response.json({message: 'my api!'})
+    async store(request, response) {
+        const { email } = request.body;
+
+        // verifica se já existe e-mail
+        let user = await User.findOne({ email });
+
+        if(!user) {
+            // add novo user
+            user = await User.create({ email })
+        }
+
+        return response.json(user);
     }
 }
