@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-export default model('House', new Schema({
+const HouseSchema = new Schema({
 
     thumbnail: String,
     description: String,
@@ -13,4 +13,14 @@ export default model('House', new Schema({
         ref: 'User'
     }
 
-}));
+}, {
+    toJSON: {
+        virtuals: true,
+    }
+});
+
+HouseSchema.virtual('thumbnail_url').get(function() {
+    return `http://localhost:3333/files/${this.thumbnail}`;
+})
+
+export default model('House', HouseSchema);
