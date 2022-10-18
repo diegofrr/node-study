@@ -1,13 +1,12 @@
-import User from "../models/User"
-import * as Yup from 'yup';
+import * as Yup from "yup";
+import User from "../models/User";
 
-import { formattedSchemaError } from '../utils/formatters';
+import formattedSchemaError from "../utils/formatters";
 
-export default new class SessionControler {
-
+export default new (class SessionControler {
     async index(request, response) {
         const { email } = request.query;
-        if (email) return response.json(await User.find({ email }))
+        if (email) return response.json(await User.find({ email }));
         const users = await User.find();
         return response.json({ amount: users.length, users });
     }
@@ -17,16 +16,16 @@ export default new class SessionControler {
             email: Yup.string().email().required(),
         });
 
-        schema.validate(request.body)
+        schema
+            .validate(request.body)
             .then(async () => {
                 const { email } = request.body;
                 let user = await User.findOne({ email });
                 if (!user) {
-                    user = await User.create({ email })
+                    user = await User.create({ email });
                 }
                 return response.json(user);
-
             })
-            .catch(err => response.json(formattedSchemaError(err)))
+            .catch((err) => response.json(formattedSchemaError(err)));
     }
-}
+})();

@@ -8,7 +8,7 @@ export default {
             const ext = path.extname(file.originalname);
             const name = path.basename(file.originalname, ext);
 
-            callback(null, `${name}-${Date.now()}${ext}`)
+            callback(null, `${name}-${Date.now()}${ext}`);
         },
-    })
-}
+    }),
+};
