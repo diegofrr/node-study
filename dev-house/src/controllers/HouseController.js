@@ -3,10 +3,11 @@ import User from '../models/User';
 
 export default new class HouseController {
 
-    async index (request, response) {
-        const { status } = request.query;
+    async index(request, response) {
+        const status = request.query?.status || null;
+        if (!status) return response.json(await House.find())
+        if (!['true', 'false'].includes(status)) return response.json({ error: 'Status inválido!' })
         const houses = await House.find({ status });
-
         return response.json(houses);
     }
 
@@ -14,7 +15,7 @@ export default new class HouseController {
         const { filename } = request.file;
         const { description, price, location, status } = request.body;
         const { user_id } = request.headers;
-        
+
         const house = await House.create({
             user: user_id,
             thumbnail: filename,
@@ -33,17 +34,17 @@ export default new class HouseController {
         const { description, price, location, status } = request.body;
         const { user_id } = request.headers;
 
-        try { const user = await User.findById(user_id); }
-        catch { return response.send({error: 'Usuário não encontrado!'}) }
-        
-        try { const houses = await House.findById(house_id); }
-        catch { return response.send({error: 'Casa não encontrada!'}) }
+        const user = await User.findById(user_id) || null;
+        const houses = await House.findById(house_id) || null;
 
-        if(String(user._id)  !== String(houses.user)) {
-            return response.status(401).json({ error: 'Usuário não autorizado!'})
+        if (!user) return response.json({ error: 'Usuário não encontrado!' })
+        if (!houses) return response.json({ error: 'Casa não encontrada!' })
+
+        if (String(user._id) !== String(houses.user)) {
+            return response.status(401).json({ error: 'Usuário não autorizado!' })
         }
 
-        await House.updateOne({_id: house_id}, {
+        await House.updateOne({ _id: house_id }, {
             user: user_id,
             thumbnail: filename,
             description,
@@ -52,7 +53,30 @@ export default new class HouseController {
             status,
         })
 
-        response.send({message: 'Dados atualizados!'});
+        response.json({ message: 'Dados atualizados!' });
+    }
+
+    async destroy(request, response) {
+        const { house_id } = request.body;
+        const { user_id } = request.headers;
+
+        try {
+            const user = await User.findById(user_id) || null;
+            const houses = await House.findById(house_id) || null;
+
+            if (!user) return response.json({ error: 'Usuário não encontrado!' })
+            if (!houses) return response.json({ error: 'Casa não encontrada!' })
+
+            if (String(user._id) !== String(houses.user)) {
+                return response.status(401).json({ error: 'Usuário não autorizado!' })
+            }
+        } catch {
+            return response.json({ error: 'Erro desconhecido :(' })
+        }
+
+        await House.findByIdAndDelete({ _id: house_id })
+
+        return response.json({ message: 'Casa deletada!' })
     }
 
 }
