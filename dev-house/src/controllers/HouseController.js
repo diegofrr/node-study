@@ -3,9 +3,7 @@ import * as Yup from 'yup';
 import House from '../models/House';
 import User from '../models/User';
 
-function formatedError(err) {
-    return { path: err.path, message: err.errors }
-}
+import { formattedSchemaError } from '../utils/formatters';
 
 export default new class HouseController {
 
@@ -40,7 +38,7 @@ export default new class HouseController {
                     status,
                 })
             ))
-            .catch(err => response.json(formatedError(err)))
+            .catch(err => response.json(formattedSchemaError(err)))
     }
 
     async update(request, response) {

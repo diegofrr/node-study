@@ -1,14 +1,7 @@
-// metodos: index, show, update, store, destroy
-
-/*
-index => listar sessões
-store: criar sessão
-show: lista ÚNICA sessão
-update: atualizar sessão
-destroy: deletar sessão
-*/
-
 import User from "../models/User"
+import * as Yup from 'yup';
+
+import { formattedSchemaError } from '../utils/formatters';
 
 export default new class SessionControler {
 
@@ -20,16 +13,20 @@ export default new class SessionControler {
     }
 
     async store(request, response) {
-        const { email } = request.body;
+        const schema = Yup.object().shape({
+            email: Yup.string().email().required(),
+        });
 
-        // verifica se já existe e-mail
-        let user = await User.findOne({ email });
+        schema.validate(request.body)
+            .then(async () => {
+                const { email } = request.body;
+                let user = await User.findOne({ email });
+                if (!user) {
+                    user = await User.create({ email })
+                }
+                return response.json(user);
 
-        if (!user) {
-            // add novo user
-            user = await User.create({ email })
-        }
-
-        return response.json(user);
+            })
+            .catch(err => response.json(formattedSchemaError(err)))
     }
 }
