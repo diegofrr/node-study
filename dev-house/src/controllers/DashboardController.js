@@ -1,6 +1,6 @@
 import House from "../models/House";
 
-class DashboardController {
+export default new (class DashboardController {
     async show(request, response) {
         const { user_id } = request.headers;
         const houses = await House.find({ user: user_id });
@@ -10,6 +10,4 @@ class DashboardController {
                 .send({ message: "O usuário não cadastrou nenhuma casa." });
         return response.json({ amount: houses.length, houses });
     }
-}
-
-export default new DashboardController();
+})();

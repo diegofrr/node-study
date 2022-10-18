@@ -2,7 +2,7 @@ import Reserve from "../models/Reserve";
 import User from "../models/User";
 import House from "../models/House";
 
-class ReserveController {
+export default new (class ReserveController {
     async store(request, response) {
         const { user_id } = request.headers;
         const { house_id } = request.params;
@@ -53,6 +53,4 @@ class ReserveController {
 
         return response.send();
     }
-}
-
-export default new ReserveController();
+})();
