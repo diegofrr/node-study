@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
-export default model('User', new Schema({
-
+const UserSchema = new Schema({
     email: String,
+})
 
-}));
+export default model('User', UserSchema);
