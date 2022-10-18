@@ -8,7 +8,7 @@ const ReserveSchema = new Schema({
     },
     house: {
         type: Schema.Types.ObjectId,
-        reft: 'House'
+        ref: 'House'
     }
 });
 

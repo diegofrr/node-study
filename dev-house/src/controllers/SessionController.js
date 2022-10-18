@@ -14,8 +14,9 @@ export default new class SessionControler {
 
     async index(request, response) {
         const { email } = request.query;
-        if(email) return response.json(await User.find({email}))
-        return response.json(await User.find());
+        if (email) return response.json(await User.find({ email }))
+        const users = await User.find();
+        return response.json({ amount: users.length, users });
     }
 
     async store(request, response) {
@@ -24,7 +25,7 @@ export default new class SessionControler {
         // verifica se já existe e-mail
         let user = await User.findOne({ email });
 
-        if(!user) {
+        if (!user) {
             // add novo user
             user = await User.create({ email })
         }

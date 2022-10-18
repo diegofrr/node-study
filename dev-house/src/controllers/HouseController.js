@@ -1,5 +1,11 @@
+import * as Yup from 'yup';
+
 import House from '../models/House';
 import User from '../models/User';
+
+function formatedError(err) {
+    return { path: err.path, message: err.errors }
+}
 
 export default new class HouseController {
 
@@ -8,24 +14,33 @@ export default new class HouseController {
         if (!status) return response.json(await House.find())
         if (!['true', 'false'].includes(status)) return response.json({ error: 'Status inválido!' })
         const houses = await House.find({ status });
-        return response.json(houses);
+        return response.json({amount: houses.length, houses});
     }
 
     async store(request, response) {
+        const schema = Yup.object().shape({
+            description: Yup.string().min(10).max(100),
+            price: Yup.number().positive().required(),
+            location: Yup.string().required(),
+            status: Yup.boolean().required(),
+        })
+
         const { filename } = request.file;
         const { description, price, location, status } = request.body;
         const { user_id } = request.headers;
 
-        const house = await House.create({
-            user: user_id,
-            thumbnail: filename,
-            description,
-            location,
-            price,
-            status,
-        })
-
-        return response.json(house);
+        await schema.validate(request.body)
+            .then(async () => response.json(
+                await House.create({
+                    user: user_id,
+                    thumbnail: filename,
+                    description,
+                    location,
+                    price,
+                    status,
+                })
+            ))
+            .catch(err => response.json(formatedError(err)))
     }
 
     async update(request, response) {

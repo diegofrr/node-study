@@ -34,10 +34,19 @@ class ReserveController {
     async index(request, response) {
         try {
             const { user_id } = request.headers;
-            return response.json(await Reserve.find({ user: user_id }));
+            if(!user_id) return response.json(await Reserve.find().populate('house'));
+            let reserves = await Reserve.find({ user: user_id }).populate('house');
+            return response.json(reserves);
         } catch {
             return response.json({ error: 'ID do usuário é inválido!' });
         }
+    }
+
+    async destroy(request, response) {
+        const { reserve_id } = request.body;
+        await Reserve.findByIdAndDelete({_id: reserve_id});
+
+        return response.send();
     }
 }
 
