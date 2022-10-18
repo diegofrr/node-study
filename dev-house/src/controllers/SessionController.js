@@ -11,6 +11,13 @@ destroy: deletar sessão
 import User from "../models/User"
 
 export default new class SessionControler {
+
+    async index(request, response) {
+        const { email } = request.query;
+        if(email) return response.json(await User.find({email}))
+        return response.json(await User.find());
+    }
+
     async store(request, response) {
         const { email } = request.body;
 
