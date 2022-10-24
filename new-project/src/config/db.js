@@ -1,7 +1,7 @@
-require("dotenv").config();
+require('dotenv').config();
 
 module.exports = {
-    dialect: "postgres",
+    dialect: 'postgres',
     host: process.env.HOST,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
