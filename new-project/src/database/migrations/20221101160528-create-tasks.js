@@ -2,24 +2,27 @@
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('users', {
+        await queryInterface.createTable('tasks', {
             id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
             },
-            name: {
+            task: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            email: {
-                type: Sequelize.STRING,
+            user_id: {
+                type: Sequelize.INTEGER,
+                references: { model: 'users', key: 'id' },
+                onUpdate: 'CASCADE',
+                onDelete: 'SET NULL',
                 allowNull: false,
-                unique: true,
             },
-            password_hash: {
-                type: Sequelize.STRING,
+            check: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
                 allowNull: false,
             },
             created_at: {
@@ -34,6 +37,6 @@ module.exports = {
     },
 
     async down(queryInterface) {
-        await queryInterface.dropTable('users');
+        await queryInterface.dropTable('tasks');
     },
 };
