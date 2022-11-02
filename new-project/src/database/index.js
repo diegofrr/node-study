@@ -17,8 +17,7 @@ class Database {
             .map((model) => model.init(this.connection))
             .map(
                 (model) =>
-                    model.associations &&
-                    model.associations(this.connection.models)
+                    model.associate && model.associate(this.connection.models)
             );
     }
 }

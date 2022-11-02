@@ -1,6 +1,6 @@
-import Reserve from "../models/Reserve";
-import User from "../models/User";
-import House from "../models/House";
+import Reserve from '../models/Reserve';
+import User from '../models/User';
+import House from '../models/House';
 
 export default new (class ReserveController {
     async store(request, response) {
@@ -10,17 +10,17 @@ export default new (class ReserveController {
 
         const house = await House.findById(house_id);
         if (!house)
-            return response.status(400).json({ error: "Esta casa não existe" });
+            return response.status(400).json({ error: 'Esta casa não existe' });
         if (house.status !== true)
             return response
                 .status(400)
-                .json({ error: "Esta casa não está disponível." });
+                .json({ error: 'Esta casa não está disponível.' });
 
         const user = await User.findById(user_id);
         if (String(user._id) === String(house.user)) {
             return response
                 .status(401)
-                .json({ error: "Não é possível reservar sua própria casa." });
+                .json({ error: 'Não é possível reservar sua própria casa.' });
         }
 
         const reserve = await Reserve.create({
@@ -29,7 +29,7 @@ export default new (class ReserveController {
             date,
         });
 
-        await reserve.populate("user house");
+        await reserve.populate('user house');
         return response.json(reserve);
     }
 
@@ -37,13 +37,13 @@ export default new (class ReserveController {
         try {
             const { user_id } = request.headers;
             if (!user_id)
-                return response.json(await Reserve.find().populate("house"));
+                return response.json(await Reserve.find().populate('house'));
             const reserves = await Reserve.find({ user: user_id }).populate(
-                "house"
+                'house'
             );
             return response.json(reserves);
         } catch {
-            return response.json({ error: "ID do usuário é inválido!" });
+            return response.json({ error: 'ID do usuário é inválido!' });
         }
     }
 

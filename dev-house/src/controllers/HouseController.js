@@ -1,16 +1,16 @@
-import * as Yup from "yup";
+import * as Yup from 'yup';
 
-import House from "../models/House";
-import User from "../models/User";
+import House from '../models/House';
+import User from '../models/User';
 
-import formattedSchemaError from "../utils/formatters";
+import formattedSchemaError from '../utils/formatters';
 
 export default new (class HouseController {
     async index(request, response) {
         const status = request.query?.status || null;
         if (!status) return response.json(await House.find());
-        if (!["true", "false"].includes(status))
-            return response.json({ error: "Status inválido!" });
+        if (!['true', 'false'].includes(status))
+            return response.json({ error: 'Status inválido!' });
         const houses = await House.find({ status });
         return response.json({ amount: houses.length, houses });
     }
@@ -53,13 +53,13 @@ export default new (class HouseController {
         const user = (await User.findById(user_id)) || null;
         const houses = (await House.findById(house_id)) || null;
 
-        if (!user) return response.json({ error: "Usuário não encontrado!" });
-        if (!houses) return response.json({ error: "Casa não encontrada!" });
+        if (!user) return response.json({ error: 'Usuário não encontrado!' });
+        if (!houses) return response.json({ error: 'Casa não encontrada!' });
 
         if (String(user._id) !== String(houses.user)) {
             return response
                 .status(401)
-                .json({ error: "Usuário não autorizado!" });
+                .json({ error: 'Usuário não autorizado!' });
         }
 
         await House.updateOne(
@@ -74,7 +74,7 @@ export default new (class HouseController {
             }
         );
 
-        return response.json({ message: "Dados atualizados!" });
+        return response.json({ message: 'Dados atualizados!' });
     }
 
     async destroy(request, response) {
@@ -86,21 +86,21 @@ export default new (class HouseController {
             const houses = (await House.findById(house_id)) || null;
 
             if (!user)
-                return response.json({ error: "Usuário não encontrado!" });
+                return response.json({ error: 'Usuário não encontrado!' });
             if (!houses)
-                return response.json({ error: "Casa não encontrada!" });
+                return response.json({ error: 'Casa não encontrada!' });
 
             if (String(user._id) !== String(houses.user)) {
                 return response
                     .status(401)
-                    .json({ error: "Usuário não autorizado!" });
+                    .json({ error: 'Usuário não autorizado!' });
             }
         } catch {
-            return response.json({ error: "Erro desconhecido :(" });
+            return response.json({ error: 'Erro desconhecido :(' });
         }
 
         await House.findByIdAndDelete({ _id: house_id });
 
-        return response.json({ message: "Casa deletada!" });
+        return response.json({ message: 'Casa deletada!' });
     }
 })();

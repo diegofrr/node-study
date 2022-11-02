@@ -1,7 +1,7 @@
-import * as Yup from "yup";
-import User from "../models/User";
+import * as Yup from 'yup';
+import User from '../models/User';
 
-import formattedSchemaError from "../utils/formatters";
+import formattedSchemaError from '../utils/formatters';
 
 export default new (class SessionControler {
     async index(request, response) {

@@ -14,8 +14,8 @@ class Task extends Model {
         return this;
     }
 
-    static associations(models) {
-        this.belongsTo(models.user, { foreignKey: 'user_id', as: 'user' });
+    static associate(models) {
+        this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
     }
 }
 
